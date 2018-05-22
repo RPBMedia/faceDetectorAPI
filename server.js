@@ -32,6 +32,21 @@ const findUser = (id) => {
   }
 }
 
+const findUserByLogin = (email, pass) => {
+  const user = database.users.find((user) => {
+    console.log('Searching...', user);
+    return user.email === email && user.password === pass;
+  })
+  if (user) {
+    console.log('User FOUND!');
+    return user;
+  } else {
+    return null;
+  }
+}
+
+
+
 
 
 // // Load hash from your password DB.
@@ -51,10 +66,11 @@ app.get('/', (req, res) => {
 
 app.post('/login', (req, res) => {
   console.log(req.body);
-  if (req.body.email === database.users[0].email &&
-      req.body.password === database.users[0].password) {
+  const userFound = findUserByLogin(req.body.email, req.body.password);
+
+  if (userFound) {
         console.log('Login successful');
-        res.json('success');
+        res.json(userFound);
   } else {
     console.log('Login unsuccessful');
     res.status(400).json('error loggin in');
@@ -76,7 +92,9 @@ app.post('/register', (req, res) => {
     entries: 0,
     joined: new Date(),
   });
-  res.json(`User ${database.users[database.users.length-1].name} is now registered`);
+  console.log('New user registered:');
+  console.log(database.users[database.users.length - 1]);
+  res.json(database.users[database.users.length - 1]);
 
 });
 
