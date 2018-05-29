@@ -103,7 +103,7 @@ app.post('/register', (req, res) => {
     .then(user => {
       res.json(user[0]);
     })
-    .catch(err => res.status(400).json("unable to register user"))
+    .catch(err => res.status(400).json("unable to register user"));
 });
 
 app.get('/profile/:id', (req, res) => {
@@ -121,13 +121,13 @@ app.get('/profile/:id', (req, res) => {
 
 app.put('/image', (req, res) => {
   const { id } = req.body;
-  const user = findUser(id);
-  if (user) {
-    user.entries++;
-    res.json(user.entries);
-  } else {
-    res.status(404).json('User not found');
-  }
+  database('users').where('id', '=', id)
+  .increment('entries', 1)
+  .returning('entries')
+  .then(entries => {
+    res.json(entries[0]);
+  })
+  .catch(err => res.status(400).json("User not found to retrieve entries"));
 });
 
 
