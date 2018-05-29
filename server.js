@@ -33,14 +33,12 @@ app.use(cors());
 // }
 
 const findUser = (id) => {
-  const user = database.users.find((user) => {
-    return user.id === id;
-  })
-  if (user) {
-    return user;
-  } else {
-    return null;
-  }
+  return database
+    .select('*')
+    .from('users')
+    .where({
+      id: id
+    });
 }
 
 const findUserByLogin = (email, pass) => {
@@ -105,17 +103,20 @@ app.post('/register', (req, res) => {
     .then(user => {
       res.json(user[0]);
     })
-    .catch(err => res.status(400).json(err))
+    .catch(err => res.status(400).json("unable to register user"))
 });
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
-  const user = findUser(id);
-  if (user) {
-    res.json(user);
-  } else {
+  findUser(id)
+  .then(user => {
+    if (user) {
+      res.json(user[0]);
+    }
+  })
+  .catch(err => {
     res.status(404).json('User not found');
-  }
+  });
 });
 
 app.put('/image', (req, res) => {
