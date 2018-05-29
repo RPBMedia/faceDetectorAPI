@@ -2,24 +2,35 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const knex = require('knex');
+
+const database = knex({
+  client: 'pg',
+  connection: {
+    host : '127.0.0.1',
+    user : 'rui.baiao',
+    password : '',
+    database : 'facedetectordb'
+  }
+});
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
-const database = {
-  users: [
-    {
-      id: '001',
-      name: 'Rui',
-      email: 'rui@gmail.com',
-      password: '1234',
-      entries: 0,
-      joined: new Date(),
-    }
-  ]
-}
+// const database = {
+//   users: [
+//     {
+//       id: '001',
+//       name: 'Rui',
+//       email: 'rui@gmail.com',
+//       password: '1234',
+//       entries: 0,
+//       joined: new Date(),
+//     }
+//   ]
+// }
 
 const findUser = (id) => {
   const user = database.users.find((user) => {
@@ -84,18 +95,17 @@ app.post('/register', (req, res) => {
       console.log(hash);
   });
 
-  database.users.push({
-    id: '00122',
-    name: name,
-    email: email,
-    password: password,
-    entries: 0,
-    joined: new Date(),
-  });
-  console.log('New user registered:');
-  console.log(database.users[database.users.length - 1]);
-  res.json(database.users[database.users.length - 1]);
-
+  database('users')
+    .returning('*')
+    .insert({
+      email: email,
+      name: name,
+      joined: new Date()
+    })
+    .then(user => {
+      res.json(user[0]);
+    })
+    .catch(err => res.status(400).json(err))
 });
 
 app.get('/profile/:id', (req, res) => {
