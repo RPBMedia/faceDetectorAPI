@@ -36,7 +36,7 @@ app.post('/register', (req, res) => { register.handleRegister(req, res, database
 
 app.get('/profile/:id', (req, res) => { users.handleGetProfile(req, res, database) });
 
-app.put('/image', (req, res, database) => {image.handleGetImage(req, res, database) });
+app.put('/image', (req, res) => {image.handleGetImage(req, res, database) });
 
 
 const listener = app.listen(3000, () => {
