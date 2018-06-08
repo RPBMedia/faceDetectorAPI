@@ -27,7 +27,7 @@ app.use(cors());
 //------------------ ROUTES -------------------
 
 app.get('/', (req, res) => {
-  res.send(database.users);
+  res.send('Server initialized and running successfully!');
 });
 
 app.post('/login', (req ,res) => { login.handleLogin(req, res, database, bcrypt) });
