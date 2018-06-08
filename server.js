@@ -12,10 +12,8 @@ const image = require('./routes/image');
 const database = knex({
   client: 'pg',
   connection: {
-    host : '127.0.0.1',
-    user : 'rui.baiao',
-    password : '',
-    database : 'facedetectordb'
+    host : process.env.DATABASE_URL,
+    ssl: true,
   }
 });
 
