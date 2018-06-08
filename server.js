@@ -40,6 +40,6 @@ app.put('/image', (req, res) => {image.handleGetImage(req, res, database) });
 app.post('/imageurl', (req, res) => {image.handleApiCall(req, res) });
 
 
-const listener = app.listen(3000, () => {
+const listener = app.listen(process.env.PORT, () => {
   console.log('Magic happens on port '+ listener.address().port);
 })
